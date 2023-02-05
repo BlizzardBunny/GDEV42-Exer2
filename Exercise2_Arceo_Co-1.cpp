@@ -60,7 +60,7 @@ int main(void)
 
     Vector2 P0, P1, P2, redPoint, greenPoint, bluePoint;
     float T;
-    int numOfSteps, numOfControlPoints;
+    int numOfSteps, numOfControlPoints, numOfCurves;
     std::string input;
     std::vector<Vector2> controlPoints, bezierPoints;
 
@@ -102,12 +102,28 @@ int main(void)
         //std::cin >> P2.x;
         //std::cin >> P2.y;
 
-        for (int i = 1; i <= numOfSteps; i++)
+        numOfCurves = numOfControlPoints / 2;
+        std::cout << numOfCurves << "\n";
+
+        //j is the number of curves present, computed above by floor dividing the number of control points by 2
+        //since the controlPoints vector indexes from 0, indices must be adjusted by subtracting 1
+        
+        for (int j = 1; j <= numOfCurves; j++)
         {
-            //bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
-            
-            bezierPoints.push_back(BezierPoint(controlPoints[0], controlPoints[1], controlPoints[2], (float)i / (float)numOfSteps));
+            std::cout << "q" << "\n";
+            P0 = controlPoints[(2*j) - 2];
+            std::cout << "q" << "\n";
+            P1 = controlPoints[2*j-1];
+            std::cout << "q" << "\n";
+            P2 = controlPoints[(2*j)];
+            std::cout << "q" << "\n";
+            for (int i = 1; i <= numOfSteps; i++)
+            {
+                bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
+                //bezierPoints.push_back(BezierPoint(controlPoints[0], controlPoints[1], controlPoints[2], (float)i / (float)numOfSteps));
+            }
         }
+
         //redPoint = BezierPoint(P0, P1, P2, 0.25);
         //greenPoint = BezierPoint(P0, P1, P2, 0.5);
         //bluePoint = BezierPoint(P0, P1, P2, 0.75);
