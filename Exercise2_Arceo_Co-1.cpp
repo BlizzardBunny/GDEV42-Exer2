@@ -58,7 +58,7 @@ int main(void)
     const int screenWidth = 1366;
     const int screenHeight = 768;
 
-    Vector2 P0, P1, P2, redPoint, greenPoint, bluePoint;
+    Vector2 P0, P1, P2, redPoint, greenPoint, bluePoint, mousePosition;
     float T;
     int numOfSteps, numOfControlPoints, numOfCurves;
     std::string input;
@@ -73,6 +73,14 @@ int main(void)
     greenPoint = { 0,0 };
     bluePoint = { 0,0 };
 
+    std::cin >> numOfSteps;
+    std::cin >> numOfControlPoints;
+    for (int i = 0; i < numOfControlPoints; i++)
+    {
+        std::cin >> P0.x;
+        std::cin >> P0.y;
+        controlPoints.push_back({P0.x, P0.y});
+    }
 
     InitWindow(screenWidth, screenHeight, "Homework 2 - Arceo, Co");
 
@@ -87,71 +95,60 @@ int main(void)
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
 
-        std::cin >> numOfSteps;
-        std::cin >> numOfControlPoints;
-        for (int i = 0; i < numOfControlPoints; i++)
-        {
-            std::cin >> P0.x;
-            std::cin >> P0.y;
-            controlPoints.push_back({P0.x, P0.y});
-        }
-        //std::cin >> P0.x;
-        //std::cin >> P0.y;
-        //std::cin >> P1.x;
-        //std::cin >> P1.y;
-        //std::cin >> P2.x;
-        //std::cin >> P2.y;
-
         numOfCurves = numOfControlPoints / 2;
-        std::cout << numOfCurves << "\n";
 
         //j is the number of curves present, computed above by floor dividing the number of control points by 2
         //since the controlPoints vector indexes from 0, indices must be adjusted by subtracting 1
-        
+
+        mousePosition = GetMousePosition();
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+        {
+            for (int i = 0; i < controlPoints.size(); i++)
+            {
+                if (CheckCollisionPointCircle(mousePosition, controlPoints[i], 10))
+                {
+
+                    bezierPoints.clear();
+                    controlPoints[i] = mousePosition;
+                    break;
+                }
+            }
+        }        
+
         for (int j = 1; j <= numOfCurves; j++)
         {
-            std::cout << "q" << "\n";
             P0 = controlPoints[(2*j) - 2];
-            std::cout << "q" << "\n";
             P1 = controlPoints[2*j-1];
-            std::cout << "q" << "\n";
             P2 = controlPoints[(2*j)];
-            std::cout << "q" << "\n";
+
             for (int i = 1; i <= numOfSteps; i++)
             {
                 bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
-                //bezierPoints.push_back(BezierPoint(controlPoints[0], controlPoints[1], controlPoints[2], (float)i / (float)numOfSteps));
             }
         }
 
-        //redPoint = BezierPoint(P0, P1, P2, 0.25);
-        //greenPoint = BezierPoint(P0, P1, P2, 0.5);
-        //bluePoint = BezierPoint(P0, P1, P2, 0.75);
+
+
+
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
 
+
         //DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
-        DrawLineV(P0, P1, BLACK);
-        DrawLineV(P1, P2, BLACK);
-        DrawCircleV(P0, 10, BLACK);
-        DrawCircleV(P1, 10, YELLOW);
-        DrawCircleV(P2, 10, PINK);
 
+        for (Vector2 ControlPoint : controlPoints)
+        {
+            DrawCircleV(ControlPoint, 10, BLACK);
+        }        
+        
         for (Vector2 Point : bezierPoints)
         {
-            DrawCircleV(Point, 10, RED);
+            DrawCircleV(Point, 2, RED);
         }
-
-        //DrawLineV(P0, redPoint, PURPLE);
-        //DrawLineV(redPoint, greenPoint, PURPLE);
-        //DrawLineV(greenPoint, bluePoint, PURPLE);
-        //DrawLineV(bluePoint, P2, PURPLE);
-
-        
 
         EndDrawing();
         //----------------------------------------------------------------------------------
