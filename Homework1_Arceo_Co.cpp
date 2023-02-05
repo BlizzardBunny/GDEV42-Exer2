@@ -121,23 +121,26 @@ int main(void)
         {
             for (int i = 0; i < controlPoints.size(); i++)
             {
+                //if clicking a control point
                 if (CheckCollisionPointCircle(mousePosition, controlPoints[i], 10))
                 {
                     bezierPoints.clear();
                     controlPoints[i] = mousePosition;
+
+                    //update bezierPoints
+                    for (int j = 1; j <= numOfCurves; j++)
+                    {
+                        P0 = controlPoints[(2 * j) - 2];
+                        P1 = controlPoints[2 * j - 1];
+                        P2 = controlPoints[(2 * j)];
+
+                        for (int i = 1; i <= numOfSteps; i++)
+                        {
+                            bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
+                        }
+                    }
+
                     break;
-                }
-            }
-
-            for (int j = 1; j <= numOfCurves; j++)
-            {
-                P0 = controlPoints[(2 * j) - 2];
-                P1 = controlPoints[2 * j - 1];
-                P2 = controlPoints[(2 * j)];
-
-                for (int i = 1; i <= numOfSteps; i++)
-                {
-                    bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
                 }
             }
         }        
