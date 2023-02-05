@@ -149,11 +149,18 @@ int main(void)
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
 
-        for (Vector2 ControlPoint : controlPoints)
+        for (int i = 0; i < controlPoints.size(); i++)
         {
-            DrawCircleV(ControlPoint, 10, BLACK);
+            if (i % 2 == 0)
+            {
+                DrawCircleV(controlPoints[i], 10, GREEN);
+            }
+            else
+            {
+                DrawCircleV(controlPoints[i], 10, RED);
+            }
         }        
         
         for (int i = 0; i < bezierPoints.size() - 1; i++)
@@ -164,7 +171,7 @@ int main(void)
                 continue;
             }
 
-            DrawLineEx(bezierPoints[i], bezierPoints[i + 1], 5, RED);
+            DrawLineEx(bezierPoints[i], bezierPoints[i + 1], 5, WHITE);
         }
 
         EndDrawing();
