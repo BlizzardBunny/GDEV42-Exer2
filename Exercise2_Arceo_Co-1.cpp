@@ -55,14 +55,14 @@ int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 1024;
+    const int screenWidth = 1366;
     const int screenHeight = 768;
 
     Vector2 P0, P1, P2, redPoint, greenPoint, bluePoint;
     float T;
-    int numOfSteps;
+    int numOfSteps, numOfControlPoints;
     std::string input;
-    std::vector<Vector2> BezierPoints;
+    std::vector<Vector2> controlPoints, bezierPoints;
 
 
     P0 = { 0,0 };
@@ -74,7 +74,7 @@ int main(void)
     bluePoint = { 0,0 };
 
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "Homework 2 - Arceo, Co");
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -88,16 +88,25 @@ int main(void)
         //----------------------------------------------------------------------------------
 
         std::cin >> numOfSteps;
-        std::cin >> P0.x;
-        std::cin >> P0.y;
-        std::cin >> P1.x;
-        std::cin >> P1.y;
-        std::cin >> P2.x;
-        std::cin >> P2.y;
+        std::cin >> numOfControlPoints;
+        for (int i = 0; i < numOfControlPoints; i++)
+        {
+            std::cin >> P0.x;
+            std::cin >> P0.y;
+            controlPoints.push_back({P0.x, P0.y});
+        }
+        //std::cin >> P0.x;
+        //std::cin >> P0.y;
+        //std::cin >> P1.x;
+        //std::cin >> P1.y;
+        //std::cin >> P2.x;
+        //std::cin >> P2.y;
 
         for (int i = 1; i <= numOfSteps; i++)
         {
-            BezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
+            //bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
+            
+            bezierPoints.push_back(BezierPoint(controlPoints[0], controlPoints[1], controlPoints[2], (float)i / (float)numOfSteps));
         }
         //redPoint = BezierPoint(P0, P1, P2, 0.25);
         //greenPoint = BezierPoint(P0, P1, P2, 0.5);
@@ -116,7 +125,7 @@ int main(void)
         DrawCircleV(P1, 10, YELLOW);
         DrawCircleV(P2, 10, PINK);
 
-        for (Vector2 Point : BezierPoints)
+        for (Vector2 Point : bezierPoints)
         {
             DrawCircleV(Point, 10, RED);
         }
