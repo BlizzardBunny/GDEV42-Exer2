@@ -21,12 +21,17 @@
 *
 ********************************************************************************************/
 
-//I worked with Lance Co for this exercise
+/**
+ * 
+ * @file Homework1_Arceo_Co.cpp
+ *
+ * @author Li Niko Arceo & Lance Co
+ *
+ */
 
 #include "raylib.h"
 #include <iostream>
 #include <vector>
-
 
 Vector2 LinearInterpolation(Vector2 P0, Vector2 P1, float T)
 {
@@ -82,7 +87,23 @@ int main(void)
         controlPoints.push_back({P0.x, P0.y});
     }
 
-    InitWindow(screenWidth, screenHeight, "Homework 2 - Arceo, Co");
+    numOfCurves = numOfControlPoints / 2;
+
+    //j is the number of curves present, computed above by floor dividing the number of control points by 2
+    //since the controlPoints vector indexes from 0, indices must be adjusted by subtracting 1
+    for (int j = 1; j <= numOfCurves; j++)
+    {
+        P0 = controlPoints[(2*j) - 2];
+        P1 = controlPoints[2*j-1];
+        P2 = controlPoints[(2*j)];
+
+        for (int i = 1; i <= numOfSteps; i++)
+        {
+            bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
+        }
+    }
+
+    InitWindow(screenWidth, screenHeight, "Homework 1 - Arceo, Co");
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -95,59 +116,62 @@ int main(void)
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
 
-        numOfCurves = numOfControlPoints / 2;
-
-        //j is the number of curves present, computed above by floor dividing the number of control points by 2
-        //since the controlPoints vector indexes from 0, indices must be adjusted by subtracting 1
-
         mousePosition = GetMousePosition();
         if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
         {
             for (int i = 0; i < controlPoints.size(); i++)
             {
+                //if clicking a control point
                 if (CheckCollisionPointCircle(mousePosition, controlPoints[i], 10))
                 {
-
                     bezierPoints.clear();
                     controlPoints[i] = mousePosition;
+
+                    //update bezierPoints
+                    for (int j = 1; j <= numOfCurves; j++)
+                    {
+                        P0 = controlPoints[(2 * j) - 2];
+                        P1 = controlPoints[2 * j - 1];
+                        P2 = controlPoints[(2 * j)];
+
+                        for (int i = 1; i <= numOfSteps; i++)
+                        {
+                            bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
+                        }
+                    }
+
                     break;
                 }
             }
         }        
 
-        for (int j = 1; j <= numOfCurves; j++)
-        {
-            P0 = controlPoints[(2*j) - 2];
-            P1 = controlPoints[2*j-1];
-            P2 = controlPoints[(2*j)];
-
-            for (int i = 1; i <= numOfSteps; i++)
-            {
-                bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
-            }
-        }
-
-
-
-
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
 
-
-        //DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
-
-        for (Vector2 ControlPoint : controlPoints)
+        for (int i = 0; i < controlPoints.size(); i++)
         {
-            DrawCircleV(ControlPoint, 10, BLACK);
+            if (i % 2 == 0)
+            {
+                DrawCircleV(controlPoints[i], 10, GREEN);
+            }
+            else
+            {
+                DrawCircleV(controlPoints[i], 10, RED);
+            }
         }        
         
-        for (Vector2 Point : bezierPoints)
+        for (int i = 0; i < bezierPoints.size() - 1; i++)
         {
-            DrawCircleV(Point, 2, RED);
+            if (bezierPoints[i].x == controlPoints[controlPoints.size() - 1].x &&
+                bezierPoints[i].y == controlPoints[controlPoints.size() - 1].y)
+            {
+                continue;
+            }
+
+            DrawLineEx(bezierPoints[i], bezierPoints[i + 1], 5, WHITE);
         }
 
         EndDrawing();
