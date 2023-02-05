@@ -21,6 +21,14 @@
 *
 ********************************************************************************************/
 
+/**
+ * 
+ * @file Homework1_Arceo_Co.cpp
+ *
+ * @author Li Niko Arceo & Lance Co
+ *
+ */
+
 #include "raylib.h"
 #include <iostream>
 #include <vector>
@@ -79,7 +87,23 @@ int main(void)
         controlPoints.push_back({P0.x, P0.y});
     }
 
-    InitWindow(screenWidth, screenHeight, "Homework 2 - Arceo, Co");
+    numOfCurves = numOfControlPoints / 2;
+
+    //j is the number of curves present, computed above by floor dividing the number of control points by 2
+    //since the controlPoints vector indexes from 0, indices must be adjusted by subtracting 1
+    for (int j = 1; j <= numOfCurves; j++)
+    {
+        P0 = controlPoints[(2*j) - 2];
+        P1 = controlPoints[2*j-1];
+        P2 = controlPoints[(2*j)];
+
+        for (int i = 1; i <= numOfSteps; i++)
+        {
+            bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
+        }
+    }
+
+    InitWindow(screenWidth, screenHeight, "Homework 1 - Arceo, Co");
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -91,8 +115,6 @@ int main(void)
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
-
-        numOfCurves = numOfControlPoints / 2;
 
         mousePosition = GetMousePosition();
         if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
@@ -106,21 +128,19 @@ int main(void)
                     break;
                 }
             }
-        }        
 
-        //j is the number of curves present, computed above by floor dividing the number of control points by 2
-        //since the controlPoints vector indexes from 0, indices must be adjusted by subtracting 1
-        for (int j = 1; j <= numOfCurves; j++)
-        {
-            P0 = controlPoints[(2*j) - 2];
-            P1 = controlPoints[2*j-1];
-            P2 = controlPoints[(2*j)];
-
-            for (int i = 1; i <= numOfSteps; i++)
+            for (int j = 1; j <= numOfCurves; j++)
             {
-                bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
+                P0 = controlPoints[(2 * j) - 2];
+                P1 = controlPoints[2 * j - 1];
+                P2 = controlPoints[(2 * j)];
+
+                for (int i = 1; i <= numOfSteps; i++)
+                {
+                    bezierPoints.push_back(BezierPoint(P0, P1, P2, (float)i / (float)numOfSteps));
+                }
             }
-        }
+        }        
 
         // Draw
         //----------------------------------------------------------------------------------
@@ -138,12 +158,10 @@ int main(void)
             if (bezierPoints[i].x == controlPoints[controlPoints.size() - 1].x &&
                 bezierPoints[i].y == controlPoints[controlPoints.size() - 1].y)
             {
-                std::cout << i << std::endl;
                 continue;
             }
 
             DrawLineEx(bezierPoints[i], bezierPoints[i + 1], 5, RED);
-            //DrawCircleV(Point, 2, RED);
         }
 
         EndDrawing();
