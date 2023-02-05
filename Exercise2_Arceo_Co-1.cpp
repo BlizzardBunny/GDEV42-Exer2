@@ -21,12 +21,9 @@
 *
 ********************************************************************************************/
 
-//I worked with Lance Co for this exercise
-
 #include "raylib.h"
 #include <iostream>
 #include <vector>
-
 
 Vector2 LinearInterpolation(Vector2 P0, Vector2 P1, float T)
 {
@@ -97,9 +94,6 @@ int main(void)
 
         numOfCurves = numOfControlPoints / 2;
 
-        //j is the number of curves present, computed above by floor dividing the number of control points by 2
-        //since the controlPoints vector indexes from 0, indices must be adjusted by subtracting 1
-
         mousePosition = GetMousePosition();
         if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
         {
@@ -107,7 +101,6 @@ int main(void)
             {
                 if (CheckCollisionPointCircle(mousePosition, controlPoints[i], 10))
                 {
-
                     bezierPoints.clear();
                     controlPoints[i] = mousePosition;
                     break;
@@ -115,6 +108,8 @@ int main(void)
             }
         }        
 
+        //j is the number of curves present, computed above by floor dividing the number of control points by 2
+        //since the controlPoints vector indexes from 0, indices must be adjusted by subtracting 1
         for (int j = 1; j <= numOfCurves; j++)
         {
             P0 = controlPoints[(2*j) - 2];
@@ -127,27 +122,28 @@ int main(void)
             }
         }
 
-
-
-
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
 
-
-        //DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
-
         for (Vector2 ControlPoint : controlPoints)
         {
             DrawCircleV(ControlPoint, 10, BLACK);
         }        
         
-        for (Vector2 Point : bezierPoints)
+        for (int i = 0; i < bezierPoints.size() - 1; i++)
         {
-            DrawCircleV(Point, 2, RED);
+            if (bezierPoints[i].x == controlPoints[controlPoints.size() - 1].x &&
+                bezierPoints[i].y == controlPoints[controlPoints.size() - 1].y)
+            {
+                std::cout << i << std::endl;
+                continue;
+            }
+
+            DrawLineEx(bezierPoints[i], bezierPoints[i + 1], 5, RED);
+            //DrawCircleV(Point, 2, RED);
         }
 
         EndDrawing();
